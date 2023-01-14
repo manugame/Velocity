@@ -134,45 +134,45 @@ public class AuthSessionHandler implements MinecraftSessionHandler {
       mcConnection.setCompressionThreshold(threshold);
     }
     VelocityConfiguration configuration = server.getConfiguration();
-    UUID playerUniqueId = player.getUniqueId();
-    if (configuration.getPlayerInfoForwardingMode() == PlayerInfoForwarding.NONE) {
-      playerUniqueId = UuidUtils.generateOfflinePlayerUuid(player.getUsername());
-    }
+//    UUID playerUniqueId = player.getUniqueId();
+//    if (configuration.getPlayerInfoForwardingMode() == PlayerInfoForwarding.NONE) {
+//      playerUniqueId = UuidUtils.generateOfflinePlayerUuid(player.getUsername());
+//    }
 
-    if (player.getIdentifiedKey() != null) {
-      IdentifiedKey playerKey = player.getIdentifiedKey();
-      if (playerKey.getSignatureHolder() == null) {
-        if (playerKey instanceof IdentifiedKeyImpl) {
-          IdentifiedKeyImpl unlinkedKey = (IdentifiedKeyImpl) playerKey;
-          // Failsafe
-          if (!unlinkedKey.internalAddHolder(player.getUniqueId())) {
-            if (onlineMode) {
-              inbound.disconnect(
-                  Component.translatable("multiplayer.disconnect.invalid_public_key"));
-              return;
-            } else {
-              logger.warn("Key for player " + player.getUsername() + " could not be verified!");
-            }
-          }
-        } else {
-          logger.warn("A custom key type has been set for player " + player.getUsername());
-        }
-      } else {
-        if (!Objects.equals(playerKey.getSignatureHolder(), playerUniqueId)) {
-          logger.warn("UUID for Player " + player.getUsername() + " mismatches! "
-              + "Chat/Commands signatures will not work correctly for this player!");
-        }
-      }
-    }
+//    if (player.getIdentifiedKey() != null) {
+//      IdentifiedKey playerKey = player.getIdentifiedKey();
+//      if (playerKey.getSignatureHolder() == null) {
+//        if (playerKey instanceof IdentifiedKeyImpl) {
+//          IdentifiedKeyImpl unlinkedKey = (IdentifiedKeyImpl) playerKey;
+//          // Failsafe
+//          if (!unlinkedKey.internalAddHolder(player.getUniqueId())) {
+//            if (onlineMode) {
+//              inbound.disconnect(
+//                  Component.translatable("multiplayer.disconnect.invalid_public_key"));
+//              return;
+//            } else {
+//              logger.warn("Key for player " + player.getUsername() + " could not be verified!");
+//            }
+//          }
+//        } else {
+//          logger.warn("A custom key type has been set for player " + player.getUsername());
+//        }
+//      } else {
+//        if (!Objects.equals(playerKey.getSignatureHolder(), playerUniqueId)) {
+//          logger.warn("UUID for Player " + player.getUsername() + " mismatches! "
+//              + "Chat/Commands signatures will not work correctly for this player!");
+//        }
+//      }
+//    }
 
-    ServerLoginSuccess success = new ServerLoginSuccess();
-    success.setUsername(player.getUsername());
-    success.setProperties(player.getGameProfileProperties());
-    success.setUuid(playerUniqueId);
-    mcConnection.write(success);
-
-    mcConnection.setAssociation(player);
-    mcConnection.setState(StateRegistry.PLAY);
+//    ServerLoginSuccess success = new ServerLoginSuccess();
+//    success.setUsername(player.getUsername());
+//    success.setProperties(player.getGameProfileProperties());
+//    success.setUuid(playerUniqueId);
+//    mcConnection.write(success);
+//
+//    mcConnection.setAssociation(player);
+//    mcConnection.setState(StateRegistry.PLAY);
 
     server.getEventManager().fire(new LoginEvent(player))
         .thenAcceptAsync(event -> {

@@ -76,9 +76,13 @@ public final class ModInfo {
     private final String id;
     private final String version;
 
+    public Mod(String id) {
+      this(id, null);
+    }
+
     public Mod(String id, String version) {
       this.id = Preconditions.checkNotNull(id, "id");
-      this.version = Preconditions.checkNotNull(version, "version");
+      this.version = version;
     }
 
     public String getId() {
@@ -86,6 +90,10 @@ public final class ModInfo {
     }
 
     public String getVersion() {
+      if (this.version == null) {
+        return "";
+      }
+
       return version;
     }
 

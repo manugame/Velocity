@@ -23,6 +23,7 @@ import com.velocitypowered.proxy.VelocityServer;
 import com.velocitypowered.proxy.connection.MinecraftSessionHandler;
 import com.velocitypowered.proxy.connection.backend.BungeeCordMessageResponder;
 import com.velocitypowered.proxy.connection.backend.VelocityServerConnection;
+import com.velocitypowered.proxy.protocol.packet.LoginPluginResponse;
 import com.velocitypowered.proxy.protocol.packet.PluginMessage;
 import com.velocitypowered.proxy.protocol.util.PluginMessageUtil;
 import io.netty.buffer.ByteBufUtil;
@@ -42,9 +43,21 @@ public class InitialConnectSessionHandler implements MinecraftSessionHandler {
 
   private final VelocityServer server;
 
-  InitialConnectSessionHandler(ConnectedPlayer player, VelocityServer server) {
+  public InitialConnectSessionHandler(ConnectedPlayer player, VelocityServer server) {
     this.player = player;
     this.server = server;
+  }
+
+  @Override
+  public boolean handle(LoginPluginResponse packet) {
+    VelocityServerConnection serverConn = player.getConnectionInFlight();
+    if (serverConn != null) {
+      if (player.getPhase().handle(player, packet, serverConn)) {
+        return true;
+      }
+      serverConn.ensureConnected().write(packet.retain());
+    }
+    return true;
   }
 
   @Override
